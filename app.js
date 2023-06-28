@@ -1,3 +1,6 @@
+require('dotenv').config({ path: 'password.env' });
+
+const dbPassword = process.env.DB_PASSWORD;
 const express = require("express");
 const mysql = require("mysql");
 const app = express();
@@ -9,7 +12,7 @@ app.use(cors());
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "alankalkan",
+  password: dbPassword,
   database: "marquise",
 });
 //Connection a la base de donnée
@@ -17,6 +20,7 @@ connection.connect(function (err) {
   if (err) throw err;
   console.log("Connecté à la base de données MySQL!");
 });
+
 app.get("/utilisateurs", (req, res, next) => {
   connection.query(
     "SELECT * FROM utilisateurs",
@@ -36,6 +40,7 @@ app.get("/utilisateurs", (req, res, next) => {
     }
   );
 });
+
 app.get("/produits", (req, res, next) => {
   connection.query("SELECT * FROM produits", function (error, results, fields) {
     if (error) {
@@ -50,6 +55,22 @@ app.get("/produits", (req, res, next) => {
   });
 });
 
+// Ajouter un produit à la base de donnée
+app.post("/produits", (req, res, next) => {
+  connection.query(
+    "INSERT INTO produits (nom, description, prix, stock, date) VALUES ('abc', 'descript', 123, 0, '12/12/2022')",
+    function (error, results, fields) {
+      if (error) {
+        console.error("Erreur lors de l'insertion des produits :", error);
+        res
+          .status(500)
+          .json({ error: "Erreur lors de l'insertion des produits" });
+      } else {
+        res.json(results);
+      }
+    }
+  );
+});
 app.use(express.json());
 
 app.use((req, res, next) => {
