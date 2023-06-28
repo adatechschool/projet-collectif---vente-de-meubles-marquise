@@ -1,6 +1,9 @@
 const express = require("express");
 const mysql = require("mysql");
 const app = express();
+const cors = require("cors");
+
+app.use(cors());
 
 // Configuration de la connexion à la base de données
 const connection = mysql.createConnection({
@@ -14,15 +17,38 @@ connection.connect(function (err) {
   if (err) throw err;
   console.log("Connecté à la base de données MySQL!");
 });
-
-connection.query(
-  "SELECT utilisateurs.id as 'utilisateurs_id', utilisateurs.nom as 'utilisateurs_nom', utilisateurs.prenom as 'utilisteur_prenom' FROM utilisateurs",
-  function (error, results, fields) {
-    if (error) throw error;
-    console.log(results);
-    // Vous pouvez faire quelque chose avec les résultats ici
-  }
-);
+app.get("/utilisateurs", (req, res, next) => {
+  connection.query(
+    "SELECT * FROM utilisateurs",
+    function (error, results, fields) {
+      if (error) {
+        console.error(
+          "Erreur lors de la récupération des utilisateurs :",
+          error
+        );
+        res
+          .status(500)
+          .json({ error: "Erreur lors de la récupération des utilisateurs" });
+      } else {
+        const jsonResults = JSON.parse(JSON.stringify(results));
+        res.json(jsonResults);
+      }
+    }
+  );
+});
+app.get("/produits", (req, res, next) => {
+  connection.query("SELECT * FROM produits", function (error, results, fields) {
+    if (error) {
+      console.error("Erreur lors de la récupération des produits :", error);
+      res
+        .status(500)
+        .json({ error: "Erreur lors de la récupération des produits" });
+    } else {
+      const jsonResults = JSON.parse(JSON.stringify(results));
+      res.json(jsonResults);
+    }
+  });
+});
 
 app.use(express.json());
 
@@ -45,30 +71,5 @@ app.use((req, res, next) => {
 //     message: "objet créé",
 //   });
 // });
-
-app.get("/api/stuff", (req, res, next) => {
-  const stuff = [
-    {
-      nom: "Ernser",
-      email: "Jennie.Koss50@yahoo.com",
-      mdp: "Vj7khbwcV3wClRB",
-      identifiant: "1",
-    },
-    {
-      nom: "Hansen",
-      email: "Viva_Hackett@hotmail.com",
-      mdp: "eHYhpZSNYZvYhXC",
-      identifiant: "2",
-    },
-    {
-      nom: "Brown",
-      email: "Darrion92@yahoo.com",
-      mdp: "GCZRZ63zAQBbRVk",
-      identifiant: "3",
-    },
-  ];
-
-  res.status(200).json(stuff);
-});
 
 module.exports = app;
