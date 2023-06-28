@@ -1,12 +1,15 @@
-require('dotenv').config({ path: './passwordhide/password.env' });
+require("dotenv").config({ path: "./passwordhide/password.env" });
 
-const dbPassword = process.env.DB_PASSWORD;
+const dbPassword = "";
 const express = require("express");
 const mysql = require("mysql");
 const app = express();
 const cors = require("cors");
 
 app.use(cors());
+
+const bodyParser = require("body-parser"); // middleware
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Configuration de la connexion à la base de données
 const connection = mysql.createConnection({
@@ -92,5 +95,58 @@ app.use((req, res, next) => {
 //     message: "objet créé",
 //   });
 // });
+
+app.get("/produits", (req, res, next) => {
+  connection.query("SELECT * FROM produits", function (error, results, fields) {
+    if (error) {
+      console.error("Erreur lors de la récupération des produits :", error);
+      res
+        .status(500)
+        .json({ error: "Erreur lors de la récupération des produits" });
+    } else {
+      const jsonResults = JSON.parse(JSON.stringify(results));
+      res.json(jsonResults);
+    }
+  });
+});
+
+//############################# LOGIN ################################
+
+// Route vers la page statique login (page html du front)
+app.get("/login", (req, res) => {
+  res.sendFile(__dirname + "/static/login.html");
+});
+
+// Route vers l'api login  requete post avec username et password depuis la page html
+//afin de parser la requete => installer bodyparser  => npm install express body-parser
+app.post("/login", (req, res) => {
+  // recuperer le login et pass depuis la requeste post
+  let username = req.body.username;
+  let password = req.body.password;
+
+  connection.query(
+    `SELECT * FROM utilisateurs WHERE email='${username}' AND mdp='${password}'`,
+    function (error, results, fields) {
+      //si erreur retourner code 500 avec message
+      if (error) {
+        res
+          .status(500)
+          .json({
+            error: "Erreur d'authentification, veuillez vérifier vos données !",
+          });
+      //sinon si requete sql ok mais resultat vide => utilisateur invalide ; json code KO
+      } else if (!results || Object.keys(results).length === 0) {
+        const jsonResults = JSON.parse('{"auth_status": "KO"}');
+        res.json(jsonResults);
+      //sinon requete ok et resultat non vide => utilisateur valide ; JSON OK //TODO amelieorer la securité avec du cryptage
+      } else {
+        const jsonResults = JSON.parse('{"auth_status": "OK"}');
+        res.json(jsonResults);
+      }
+    }
+  );
+});
+
+//####################################################################
 
 module.exports = app;
