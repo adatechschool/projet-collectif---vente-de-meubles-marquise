@@ -5,6 +5,8 @@ const express = require("express");
 const mysql = require('mysql2')
 const app = express();
 const cors = require("cors");
+const multer = require('multer'); // Middleware pour gérer les téléchargements de fichiers
+
 
 app.use(cors());
 
@@ -84,6 +86,38 @@ app.use((req, res, next) => {
     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
   );
   next();
+});
+
+// Configuration de Multer pour spécifier où les fichiers doivent être stockés
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '../images');
+  }
+});
+
+
+const upload = multer({ storage: storage });
+
+app.post('/produits', upload.single('imageFile'), (req, res) => {
+  if (!req.file) {
+    res.status(400).send('Aucun fichier n\'a été téléchargé.');
+    return;
+  }
+
+  const filePath = req.file.path;
+
+  // Enregistrement du chemin d'accès à l'image dans la base de données
+  const query = "INSERT INTO produits (photo) VALUES ('filePath')";
+  connection.query(query, [filePath], (err, result) => {
+    if (err) {
+      console.error('Erreur lors de l\'enregistrement du chemin d\'accès à l\'image dans la base de données :', err);
+      res.status(500).send('Une erreur s\'est produite lors du traitement de la requête.');
+      return;
+    }
+
+    // Le fichier a été téléchargé et enregistré avec succès dans la base de données
+    res.send('Le fichier a été téléchargé et enregistré.');
+  });
 });
 
 // app.post("/api/stuff", (req, res, next) => {

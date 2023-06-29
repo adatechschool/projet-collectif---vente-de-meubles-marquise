@@ -26,3 +26,5 @@ protocol41: Indique si le protocole utilisé est le protocole MySQL 4.1 ou supé
 changedRows: Le nombre de lignes modifiées par la dernière requête sur le serveur.
 
 Dans le fichier password.env => mettez votre mdp pour vous connecter à la bdd
+
+multer est un package de gestion de fichiers. Sa méthode diskStorage() configure le chemin et le nom de fichier pour les fichiers entrants. npm install express multer
