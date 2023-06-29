@@ -8,6 +8,13 @@ document
     const result = await data.json(); // Conversion format JSON
     div.innerHTML = JSON.stringify(result[0]);
   });
+
+const register = () => {
+  const data = fetch("http://localhost:3000/utilisateurs");
+  console.log(data);
+  
+  const final = JSON.stringify(result);
+};
 // document
 //   .getElementById("fetchProductsBtn")
 //   .addEventListener("click", function () {
