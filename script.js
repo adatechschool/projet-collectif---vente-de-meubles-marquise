@@ -8,6 +8,9 @@ document
     const result = await data.json(); // Conversion format JSON
     div.innerHTML = JSON.stringify(result[0]);
   });
+
+
+  
 // document
 //   .getElementById("fetchProductsBtn")
 //   .addEventListener("click", function () {

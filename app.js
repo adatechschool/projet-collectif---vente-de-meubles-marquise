@@ -119,16 +119,18 @@ app.get("/login", (req, res) => {
 
 // Route vers l'api login  requete post avec username et password depuis la page html
 //afin de parser la requete => installer bodyparser  => npm install express body-parser
-app.post("/login", (req, res) => {
+app.post("/login", (req, res,) => {
   // recuperer le login et pass depuis la requeste post
   let username = req.body.username;
   let password = req.body.password;
+  console.log("coco")
 
   connection.query(
     `SELECT * FROM utilisateurs WHERE email='${username}' AND mdp='${password}'`,
     function (error, results, fields) {
       //si erreur retourner code 500 avec message
       if (error) {
+        console.log("lala")
         res
           .status(500)
           .json({
@@ -136,11 +138,13 @@ app.post("/login", (req, res) => {
           });
       //sinon si requete sql ok mais resultat vide => utilisateur invalide ; json code KO
       } else if (!results || Object.keys(results).length === 0) {
+        console.log("blaba")
         const jsonResults = JSON.parse('{"auth_status": "KO"}');
         res.json(jsonResults);
       //sinon requete ok et resultat non vide => utilisateur valide ; JSON OK //TODO amelieorer la securité avec du cryptage
       } else {
         const jsonResults = JSON.parse('{"auth_status": "OK"}');
+        console.log("mmm")
         res.json(jsonResults);
       }
     }
