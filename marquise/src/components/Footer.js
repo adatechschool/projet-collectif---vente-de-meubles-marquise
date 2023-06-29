@@ -54,7 +54,7 @@ const Footer = () => {
             </li>
             <li>
               <FaCcPaypal size={35}/>
-            </li>
+            </li> 
           </ul>
         </div>
       </div>
