@@ -2,13 +2,14 @@ import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-const Page_Accueil = () => {
+const PageAccueil = () => {
     return (
         <div>
             <Header />
+            <h1>coucou</h1>
             <Footer />
         </div>
     );
 };
 
-export default Page_Accueil;
+export default PageAccueil;
