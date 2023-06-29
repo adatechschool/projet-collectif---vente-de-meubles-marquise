@@ -1,15 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Affichage des produits</title>
-</head>
-<body>
-  <h1>Liste des produits</h1>
+  <head>
+    <title>Affichage des produits</title>
+  </head>
+  <body>
+    <h1>Liste des produits</h1>
 
-  <button id="fetchProductsBtn">Afficher les produits</button>
+    <button id="fetchProductsBtn">Afficher les produits</button>
 
-  <div id="productList"></div>
+    <div id="productList"></div>
 
-  <script src="script.js"></script>
-</body>
+    <div className="registration">
+      <h1>Registration</h1>
+      <label>mail</label>
+      <input type="text" />
+      <label>mdp</label>
+      <input type="text" />
+      <button onclick="register()">Register</button>
+
+      <div className="login">
+        <h1>Login</h1>
+        <input type="text" placeholder="Username..." />
+        <input type="password" placeholder="Password..." />
+        <button onClick="{login}">Login</button>
+      </div>
+
+    </div>
+    <script src="script.js"></script>
+  </body>
 </html>

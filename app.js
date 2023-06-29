@@ -1,11 +1,13 @@
-require('dotenv').config({ path: './passwordhide/password.env' });
+require("dotenv").config({ path: "./passwordhide/password.env" });
 
-const dbPassword = process.env.DB_PASSWORD;
 const express = require("express");
 const mysql = require("mysql");
-const app = express();
 const cors = require("cors");
+const app = express();
 
+const dbPassword = process.env.DB_PASSWORD;
+
+app.use(express.json()); // permet de convertir tout auto en format json
 app.use(cors());
 
 // Configuration de la connexion à la base de données
@@ -71,7 +73,18 @@ app.post("/produits", (req, res, next) => {
     }
   );
 });
-app.use(express.json());
+
+app.post("/utilisateurs", (req, res) => {
+  const email = req.body.email;
+  const mdp = req.body.mdp;
+  connection.query("INSERT INTO utilisateurs (email, mdp)VALUES (?,?)"),
+    [email, mdp],
+    (err, result) => {
+      console.log(err);
+    };
+});
+
+
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
