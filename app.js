@@ -6,13 +6,9 @@ const mysql = require("mysql");
 const cors = require("cors");
 const app = express();
 
-const dbPassword = process.env.DB_PASSWORD;
-
 app.use(express.json()); // permet de convertir tout auto en format json
 app.use(cors());
 
-const bodyParser = require("body-parser"); // middleware
-app.use(bodyParser.urlencoded({ extended: false }));
 
 // Configuration de la connexion à la base de données
 const connection = mysql.createConnection({
@@ -25,6 +21,35 @@ const connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   console.log("Connecté à la base de données MySQL!");
+});
+
+// Mise à jour d'un produit dans la base de données
+app.put('/produits', (req, res) => {
+  const { nom, prix ,description,stock,date} = req.body;
+  const { id } = req.params;
+  const query = 'UPDATE produits SET nom = "a", prix = 14, description = "azea", stock= 1, date= 12/11/2211 WHERE id = 1'; // remplacer par des variables
+  connection.query(query, [id,nom,description, prix,stock, date], (err, result) => {
+    if (err) {
+      console.error('Erreur lors de la mise à jour du produit :', err);
+      res.status(500).send('Erreur lors de la mise à jour du produit');
+      return;
+    }
+    res.send('Produit mis à jour avec succès');
+  });
+});
+
+// Suppression d'un produit de la base de données
+app.delete('/produits', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE produits FROM produits WHERE id = 2';
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('Erreur lors de la suppression du produit :', err);
+      res.status(500).send('Erreur lors de la suppression du produit');
+      return;
+    }
+    res.send('Produit supprimé avec succès');
+  });
 });
 
 app.get("/utilisateurs", (req, res, next) => {
@@ -88,28 +113,6 @@ app.post("/utilisateurs", (req, res) => {
     };
 });
 
-
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  next();
-});
-
-// app.post("/api/stuff", (req, res, next) => {
-//   console.log(req.body);
-//   res.status(201).json({
-//     message: "objet créé",
-//   });
-// });
-
 app.get("/produits", (req, res, next) => {
   connection.query("SELECT * FROM produits", function (error, results, fields) {
     if (error) {
@@ -124,43 +127,17 @@ app.get("/produits", (req, res, next) => {
   });
 });
 
-//############################# LOGIN ################################
-
-// Route vers la page statique login (page html du front)
-app.get("/login", (req, res) => {
-  res.sendFile(__dirname + "/static/login.html");
-});
-
-// Route vers l'api login  requete post avec username et password depuis la page html
-//afin de parser la requete => installer bodyparser  => npm install express body-parser
-app.post("/login", (req, res) => {
-  // recuperer le login et pass depuis la requeste post
-  let username = req.body.username;
-  let password = req.body.password;
-
-  connection.query(
-    `SELECT * FROM utilisateurs WHERE email='${username}' AND mdp='${password}'`,
-    function (error, results, fields) {
-      //si erreur retourner code 500 avec message
-      if (error) {
-        res
-          .status(500)
-          .json({
-            error: "Erreur d'authentification, veuillez vérifier vos données !",
-          });
-      //sinon si requete sql ok mais resultat vide => utilisateur invalide ; json code KO
-      } else if (!results || Object.keys(results).length === 0) {
-        const jsonResults = JSON.parse('{"auth_status": "KO"}');
-        res.json(jsonResults);
-      //sinon requete ok et resultat non vide => utilisateur valide ; JSON OK //TODO amelieorer la securité avec du cryptage
-      } else {
-        const jsonResults = JSON.parse('{"auth_status": "OK"}');
-        res.json(jsonResults);
-      }
-    }
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
   );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  next();
 });
-
-//####################################################################
 
 module.exports = app;
