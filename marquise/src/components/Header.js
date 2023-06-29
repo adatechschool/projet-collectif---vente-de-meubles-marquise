@@ -1,41 +1,40 @@
 import React from "react";
-import favoris from "../assets/favoris.png";
-import panier from "../assets/panier.png";
-import user from "../assets/user.png";
 import logo from "../assets/logo.png";
+import { Link } from "react-router-dom";
+import { MdOutlineFavoriteBorder } from 'react-icons/md';
+import { FiShoppingCart } from 'react-icons/fi';
+import { AiOutlineUser, AiOutlineSearch } from 'react-icons/ai';
 
 const Header = () => {
   return (
     <div>
-      <div className="flex justify-between bg-black h-24 pt-3 items-center">
+      <div className="flex justify-between bg-black h-24 pt-3 items-center px-5">
         <div className="text-white">
           <img src={logo} className="w-16" />
         </div>
-        <div className="SearchBar w-2/5">
-          <label>
+        <div className="SearchBar w-2/5 flex">
+            <span><AiOutlineSearch className="w-8 h-8 absolute right"/></span>
             <input
               type="text"
               placeholder="recherche..."
-              className="border border-black rounded-lg w-full"
+              className="border border-black rounded-lg w-full h-8"
+              style={{ textIndent: '2rem' }}
             />
-          </label>
         </div>
-        <div className="flex gap-2">
-          <img src={favoris} alt="" className="w-8 h-8" />
-          <img src={panier} alt="" className="w-8 h-7" />
-          <img src={user} alt="" className="w-8 h-8" />
+        <div className="flex gap-4">
+          <Link to={"/favoris"}>< MdOutlineFavoriteBorder className="text-white w-8 h-8" /></Link>
+          <Link to={"/panier"}><FiShoppingCart className="text-white w-8 h-8" /></Link>
+          <Link to={"/connexion"}><AiOutlineUser className="text-white w-8 h-8" /></Link>
         </div>
       </div>
-      <div>
-        <ul>
-            <li>Nouveauté</li>
-            <li>Nouveauté</li>
-            <li>Nouveauté</li>
-            
-        </ul>
+      <div className="text-white bg-black flex gap-9 px-5 py-4">
+        <Link to={"/nosproduits"} > Nos Produits </Link>
+        <Link to={"/nouveaute"} > Nouveautés </Link>
+        <Link to={"/promotions"} > Promotions </Link>
       </div>
     </div>
   );
 };
+
 
 export default Header;
