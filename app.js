@@ -146,17 +146,34 @@ app.post("/login", (req, res) => {
       } else {
         const utilisateur = results[0];
 
-        // Comparer le mot de passe avec le mot de passe stocké dans la base de données
-        if (mdp === utilisateur.mdp) {
-          // Mot de passe correct
-          // Définir une variable d'état dans la session pour suivre l'état de connexion
-          req.session.isLoggedIn = true;
-          res.send("Vous êtes connecté");
-          console.log("utilisateur connecté!")
-        } else {
-          // Mot de passe incorrect
-          res.status(401).send("Mot de passe incorrect");
-        }
+        // // Comparer le mot de passe avec le mot de passe stocké dans la base de données
+        // if (mdp === utilisateur.mdp) {
+        //   // Mot de passe correct
+        //   // Définir une variable d'état dans la session pour suivre l'état de connexion
+        //   req.session.isLoggedIn = true;
+        //   res.send("Vous êtes connecté");
+        //   console.log("utilisateur connecté!")
+        // } else {
+        //   // Mot de passe incorrect
+        //   res.status(401).send("Mot de passe incorrect");
+        // }
+
+        // Vérifier si le mot de passe est correct en utilisant bcrypt
+        bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
+          if (err) {
+            console.log("pas de match")
+            throw err;
+          }
+
+          if (isMatch) {
+            // Définir une variable d'état dans la session pour suivre l'état de connexion
+            req.session.isLoggedIn = true;
+            res.send('Vous êtes connecté');
+            console.log('Vous êtes connecté');
+          } else {
+            res.status(401).send('Mot de passe incorrect');
+          }
+        })
       }
     }
   );
@@ -164,24 +181,28 @@ app.post("/login", (req, res) => {
 
 // Définir une route d'inscription
 app.post("/register", (req, res) => {
-  const { username, password } = req.body;
+  const { nom,prenom,email, mdp,adresse } = req.body;
+  console.log("inscription de " + email + "...");
+
 
   // Hacher le mot de passe à l'aide de bcrypt
-  bcrypt.hash(password, 10, (err, hashedPassword) => {
+  bcrypt.hash(mdp, 10, (err, hashedPassword) => {
     if (err) {
       throw err;
     }
 
     // Insérer les informations d'utilisateur dans la base de données
-    db.query(
-      "INSERT INTO users (username, password) VALUES (?, ?)",
-      [username, hashedPassword],
+    connection.query(
+      "INSERT INTO utilisateurs (nom,prenom,email, mdp,adresse ) VALUES (?, ?,?,?,?)",
+      [nom,prenom,email, hashedPassword,adresse],
       (err) => {
         if (err) {
+          console.log("erreur d'inscription'");
           throw err;
         }
 
         res.send("Inscription réussie");
+        console.log("Inscription réussie");
       }
     );
   });
