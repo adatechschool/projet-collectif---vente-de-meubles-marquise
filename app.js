@@ -1,6 +1,7 @@
 require("dotenv").config({ path: "./passwordhide/password.env" });
 
 const dbPassword = process.env.DB_PASSWORD;
+const dbPort = process.env.DB_PORT;
 const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
@@ -9,13 +10,13 @@ const app = express();
 app.use(express.json()); // permet de convertir tout auto en format json
 app.use(cors());
 
-
 // Configuration de la connexion à la base de données
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: dbPassword,
   database: "marquise",
+  port: dbPort,
 });
 //Connection a la base de donnée
 connection.connect(function (err) {
@@ -23,35 +24,7 @@ connection.connect(function (err) {
   console.log("Connecté à la base de données MySQL!");
 });
 
-// Mise à jour d'un produit dans la base de données
-app.put('/produits', (req, res) => {
-  const { nom, prix ,description,stock,date} = req.body;
-  const { id } = req.params;
-  const query = 'UPDATE produits SET nom = "a", prix = 14, description = "azea", stock= 1, date= 12/11/2211 WHERE id = 1'; // remplacer par des variables
-  connection.query(query, [id,nom,description, prix,stock, date], (err, result) => {
-    if (err) {
-      console.error('Erreur lors de la mise à jour du produit :', err);
-      res.status(500).send('Erreur lors de la mise à jour du produit');
-      return;
-    }
-    res.send('Produit mis à jour avec succès');
-  });
-});
-
-// Suppression d'un produit de la base de données
-app.delete('/produits', (req, res) => {
-  const { id } = req.params;
-  const query = 'DELETE produits FROM produits WHERE id = 2';
-  connection.query(query, [id], (err, result) => {
-    if (err) {
-      console.error('Erreur lors de la suppression du produit :', err);
-      res.status(500).send('Erreur lors de la suppression du produit');
-      return;
-    }
-    res.send('Produit supprimé avec succès');
-  });
-});
-
+// Selectionner un utilisateur
 app.get("/utilisateurs", (req, res, next) => {
   connection.query(
     "SELECT * FROM utilisateurs",
@@ -70,9 +43,43 @@ app.get("/utilisateurs", (req, res, next) => {
       }
     }
   );
+  next();
+});
+//Création d'un utilisateur
+app.post("/utilisateurs", (req, res, next) => {
+  const email = req.body.email;
+  const mdp = req.body.mdp;
+  connection.query(
+    "INSERT INTO utilisateurs (email, mdp) VALUES (?, ?)",
+    [email, mdp],
+    (err, result) => {
+      if (err) {
+        console.error("Erreur lors de l'insertion de l'utilisateur :", err);
+        res
+          .status(500)
+          .json({ error: "Erreur lors de l'insertion de l'utilisateur" });
+        return;
+      }
+      res.json(result);
+    }
+  );
 });
 
-app.get("/produits", (req, res, next) => {
+// Suppression d'un utilisateur de la base de données
+app.delete("/utilisateurs", (req, res) => {
+  const { id } = req.params;
+  const query = "DELETE utilisateurs FROM utilisateurs WHERE id = ?";
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de la suppression du produit :", err);
+      res.status(500).send("Erreur lors de la suppression du produit");
+      return;
+    }
+    res.send("Utilisateur supprimé avec succès");
+  });
+});
+
+app.get("/produits", (req, res) => {
   connection.query("SELECT * FROM produits", function (error, results, fields) {
     if (error) {
       console.error("Erreur lors de la récupération des produits :", error);
@@ -87,7 +94,7 @@ app.get("/produits", (req, res, next) => {
 });
 
 // Ajouter un produit à la base de donnée
-app.post("/produits", (req, res, next) => {
+app.post("/produits", (req, res) => {
   connection.query(
     "INSERT INTO produits (nom, description, prix, stock, date) VALUES ('abc', 'descript', 123, 0, '12/12/2022')",
     function (error, results, fields) {
@@ -103,17 +110,60 @@ app.post("/produits", (req, res, next) => {
   );
 });
 
-app.post("/utilisateurs", (req, res) => {
-  const email = req.body.email;
-  const mdp = req.body.mdp;
-  connection.query("INSERT INTO utilisateurs (email, mdp)VALUES (?,?)"),
-    [email, mdp],
-    (err, result) => {
-      console.log(err);
-    };
+//Ajouter un article dans le panier!!
+app.post("/panier", (req, res) => {
+  const { quantite, utilisateur_id, produit_id } = req.body;
+  connection.query(
+    "INSERT INTO panier (quantite, utilisateur_id, produit_id) VALUES (?, ?, ?)",
+    [quantite, utilisateur_id, produit_id],
+    function (error, results, fields) {
+      if (error) {
+        console.error("Erreur lors de l'insertion des produits :", error);
+        res
+          .status(500)
+          .json({ error: "Erreur lors de l'insertion des produits" });
+      } else {
+        res.json(results);
+      }
+    }
+  );
 });
 
-app.get("/produits", (req, res, next) => {
+// Mise à jour d'un produit dans la base de données
+app.put("/produits/:id", (req, res) => {
+  const { nom, prix, description, stock, date } = req.body;
+  const { id } = req.params;
+  const query =
+    "UPDATE produits SET nom = ?, prix = ?, description = ?, stock = ?, date = ? WHERE id = ?";
+  connection.query(
+    query,
+    [nom, prix, description, stock, date, id],
+    (err, result) => {
+      if (err) {
+        console.error("Erreur lors de la mise à jour du produit :", err);
+        res.status(500).send("Erreur lors de la mise à jour du produit");
+        return;
+      }
+      res.send("Produit mis à jour avec succès");
+    }
+  );
+});
+
+// Suppression d'un produit de la base de données
+app.delete("/produits/:id", (req, res) => {
+  const { id } = req.params;
+  const query = "DELETE FROM produits WHERE id = ?";
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de la suppression du produit :", err);
+      res.status(500).send("Erreur lors de la suppression du produit");
+      return;
+    }
+    res.send("Produit supprimé avec succès");
+  });
+});
+
+app.get("/produits", (req, res) => {
   connection.query("SELECT * FROM produits", function (error, results, fields) {
     if (error) {
       console.error("Erreur lors de la récupération des produits :", error);
