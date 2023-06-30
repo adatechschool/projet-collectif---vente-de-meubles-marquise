@@ -25,10 +25,10 @@ function Inscription() {
               <option value="CA">Canada</option>
               <option value="FR">France</option>
               <option value="BE">Belgique</option>
-              <option value="DE">Italie</option>
-              <option value="US">Espagne</option>
-              <option value="DE">Luxembourg</option>
-              <option value="DE">Pays-Bas</option>
+              <option value="IT">Italie</option>
+              <option value="ES">Espagne</option>
+              <option value="LU">Luxembourg</option>
+              <option value="NL">Pays-Bas</option>
             </select>
           </div>
           <div className="flex flex-col my-4">
