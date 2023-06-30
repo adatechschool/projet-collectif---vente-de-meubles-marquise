@@ -1,11 +1,16 @@
 require("dotenv").config({ path: "./passwordhide/password.env" });
 
-const dbPassword = process.env.DB_PASSWORD;;
-const dbPort=process.env.DB_PORT;
+const dbPassword = process.env.DB_PASSWORD;
+const dbPort = process.env.DB_PORT;
 const express = require("express");
 const mysql = require("mysql2");
 const app = express();
 const cors = require("cors");
+
+//modules pour l'authentification
+const bcrypt = require("bcrypt");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 
 app.use(cors());
 
@@ -91,13 +96,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.post("/api/stuff", (req, res, next) => {
-//   console.log(req.body);
-//   res.status(201).json({
-//     message: "objet créé",
-//   });
-// });
-
 app.get("/produits", (req, res, next) => {
   connection.query("SELECT * FROM produits", function (error, results, fields) {
     if (error) {
@@ -114,44 +112,89 @@ app.get("/produits", (req, res, next) => {
 
 //############################# LOGIN ################################
 
-// Route vers la page statique login (page html du front)
-app.get("/login", (req, res) => {
-  res.sendFile(__dirname + "./static/login.html");
-});
+//configuration du secret (signature cookies et session)
+const crypto = require("crypto");
+const secret = crypto.randomBytes(32).toString("hex");
 
-// Route vers l'api login  requete post avec username et password depuis la page html
-//afin de parser la requete => installer bodyparser  => npm install express body-parser
-app.post("/login", (req, res,) => {
-  // recuperer le login et pass depuis la requeste post
-  let username = req.body.username;
-  let password = req.body.password;
-  console.log("coco")
+// Configurer le middleware pour les sessions et les cookies
+app.use(cookieParser());
+app.use(
+  session({
+    secret: secret,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
+// Définir une route de connexion
+app.post("/login", (req, res) => {
+  const { email, mdp } = req.body;
+  console.log("Trying to login with " + email + "...");
+  // Vérifier si le nom d'utilisateur et le mot de passe correspondent à la base de données
   connection.query(
-    `SELECT * FROM utilisateurs WHERE email='${username}' AND mdp='${password}'`,
-    function (error, results, fields) {
-      //si erreur retourner code 500 avec message
-      if (error) {
-        console.log("lala")
-        res
-          .status(500)
-          .json({
-            error: "Erreur d'authentification, veuillez vérifier vos données !",
-          });
-      //sinon si requete sql ok mais resultat vide => utilisateur invalide ; json code KO
-      } else if (!results || Object.keys(results).length === 0) {
-        console.log("blaba")
-        const jsonResults = JSON.parse('{"auth_status": "KO"}');
-        res.json(jsonResults);
-      //sinon requete ok et resultat non vide => utilisateur valide ; JSON OK //TODO amelieorer la securité avec du cryptage
+    "SELECT * FROM utilisateurs WHERE email = ?",
+    [email],
+    (err, results) => {
+      if (err) {
+        console.log("erreur de connexion");
+        throw err;
+      }
+
+      if (results.length === 0) {
+        console.error("nom d'utilisateur incorrect");
+        res.status(401).send("Nom d'utilisateur incorrect");
       } else {
-        const jsonResults = JSON.parse('{"auth_status": "OK"}');
-        console.log("mmm")
-        res.json(jsonResults);
+        const utilisateur = results[0];
+
+        // Comparer le mot de passe avec le mot de passe stocké dans la base de données
+        if (mdp === utilisateur.mdp) {
+          // Mot de passe correct
+          // Définir une variable d'état dans la session pour suivre l'état de connexion
+          req.session.isLoggedIn = true;
+          res.send("Vous êtes connecté");
+          console.log("utilisateur connecté!")
+        } else {
+          // Mot de passe incorrect
+          res.status(401).send("Mot de passe incorrect");
+        }
       }
     }
   );
 });
+
+// Définir une route d'inscription
+app.post("/register", (req, res) => {
+  const { username, password } = req.body;
+
+  // Hacher le mot de passe à l'aide de bcrypt
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) {
+      throw err;
+    }
+
+    // Insérer les informations d'utilisateur dans la base de données
+    db.query(
+      "INSERT INTO users (username, password) VALUES (?, ?)",
+      [username, hashedPassword],
+      (err) => {
+        if (err) {
+          throw err;
+        }
+
+        res.send("Inscription réussie");
+      }
+    );
+  });
+});
+
+// Middleware pour vérifier si l'utilisateur est authentifié
+function requireAuth(req, res, next) {
+  if (req.session.isLoggedIn) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
 
 //####################################################################
 
