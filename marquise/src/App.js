@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
-import ConnexionInscription from "./pages/ConnexionInscription";
+import Connexion from "./pages/Connexion";
 import PageAccueil from "./pages/PageAccueil";
 import NosProduits from './pages/NosProduits';
 import Nouveaute from './pages/Nouveaute';
@@ -16,7 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index  element={<PageAccueil />} />
-          <Route path="/connexion" element={<ConnexionInscription />} />
+          <Route path="/connexion" element={<Connexion />} />
           <Route path="/nosproduits" element={<NosProduits />} />
           <Route path="/nouveaute" element={<Nouveaute />} />
           <Route path="/promotions" element={<Promotions />} />
