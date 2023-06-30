@@ -10,7 +10,7 @@ const Header = () => {
     <div>
       <div className="flex justify-between bg-black h-24 pt-3 items-center px-5">
         <div className="text-white">
-          <img src={logo} className="w-16" />
+          <img src={logo} className="w-16" alt="Logo Marquise" />
         </div>
         <div className="SearchBar w-2/5 flex">
             <span><AiOutlineSearch className="w-8 h-8 absolute right"/></span>
@@ -35,6 +35,5 @@ const Header = () => {
     </div>
   );
 };
-
 
 export default Header;
