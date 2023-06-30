@@ -1,8 +1,9 @@
 require("dotenv").config({ path: "./passwordhide/password.env" });
 
-const dbPassword = "";
+const dbPassword = process.env.DB_PASSWORD;;
+const dbPort=process.env.DB_PORT;
 const express = require("express");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const app = express();
 const cors = require("cors");
 
@@ -16,6 +17,7 @@ const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: dbPassword,
+  port: dbPort,
   database: "marquise",
 });
 //Connection a la base de donnée
@@ -114,7 +116,7 @@ app.get("/produits", (req, res, next) => {
 
 // Route vers la page statique login (page html du front)
 app.get("/login", (req, res) => {
-  res.sendFile(__dirname + "/static/login.html");
+  res.sendFile(__dirname + "./static/login.html");
 });
 
 // Route vers l'api login  requete post avec username et password depuis la page html
