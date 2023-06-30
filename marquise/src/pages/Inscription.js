@@ -44,13 +44,13 @@ function Inscription() {
               <input type="city" name="city" id="city" className="mt-2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-primary-600 block w-full p-2.5" placeholder="Paris" />
           </div>
           <div className="flex flex-col my-4">
-              <label for="password" className="text-base font-medium text-gray-900">Password</label>
+              <label for="password" className="text-base font-medium text-gray-900">Mot de passe</label>
               <div className="relative flex items-center mt-2">
                   <input type='text' name="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-primary-600 block w-full p-2.5" placeholder="Saisissez votre mot de passe" />
               </div>
           </div>
           <div className="flex flex-col my-4">
-              <label for="password_confirmation" className="text-base font-medium text-gray-900">Password Confirmation</label>
+              <label for="password_confirmation" className="text-base font-medium text-gray-900">Confirmation du mot de passe</label>
               <input type='text' name="password_confirmation" id="password_confirmation" className=" mt-2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-primary-600 block w-full p-2.5" placeholder="Confirmer votre mot de passe" />
           </div>
           <div className="flex items-center">
