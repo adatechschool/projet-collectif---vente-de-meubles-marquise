@@ -22,7 +22,7 @@ const Connexion = () => {
 						<button type="submit" className="w-full max-w-xs text-black bg-white border-2 border-black font-medium rounded-lg text-sm hover:text-white hover:bg-black px-5 py-2.5 text-center">Se connecter</button>
 					</div>
 					<p className="text-sm font-light text-gray-500 dark:text-gray-400">
-						Nouvel utilisateur ? <a href="./Inscription.js" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Je créer mon compte</a>
+						Nouvel utilisateur ? <a href="./Inscription" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Je créer mon compte</a>
 					</p>
 				</form>
 			</section>
