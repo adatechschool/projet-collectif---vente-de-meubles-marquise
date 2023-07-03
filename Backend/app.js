@@ -3,7 +3,7 @@ require("dotenv").config({ path: "./passwordhide/password.env" });
 const dbPassword = process.env.DB_PASSWORD;
 const dbPort = process.env.DB_PORT;
 const express = require("express");
-const mysql = require("mysql2");
+const mysql = require("mysql");
 const app = express();
 const cors = require("cors");
 
@@ -202,57 +202,57 @@ app.use(
   })
 );
 
-// Définir une route de connexion
-app.post("/login", (req, res) => {
-  const { email, mdp } = req.body;
-  console.log("Trying to login with " + email + "...");
-  // Vérifier si le nom d'utilisateur et le mot de passe correspondent à la base de données
-  connection.query(
-    "SELECT * FROM utilisateurs WHERE email = ?",
-    [email],
-    (err, results) => {
-      if (err) {
-        console.log("erreur de connexion");
-        throw err;
-      }
+  // Définir une route de connexion
+  app.post("/login", (req, res) => {
+    const { email, mdp } = req.body;
+    console.log("Trying to login with " + email + "...");
+    // Vérifier si le nom d'utilisateur et le mot de passe correspondent à la base de données
+    connection.query(
+      "SELECT * FROM utilisateurs WHERE email = ?",
+      [email],
+      (err, results) => {
+        if (err) {
+          console.log("erreur de connexion");
+          throw err;
+        }
 
-      if (results.length === 0) {
-        console.error("nom d'utilisateur incorrect");
-        res.status(401).send("Nom d'utilisateur incorrect");
-      } else {
-        const utilisateur = results[0];
+        if (results.length === 0) {
+          console.error("nom d'utilisateur incorrect");
+          res.status(401).send("Nom d'utilisateur incorrect");
+        } else {
+          const utilisateur = results[0];
 
-        // // Comparer le mot de passe avec le mot de passe stocké dans la base de données
-        // if (mdp === utilisateur.mdp) {
-        //   // Mot de passe correct
-        //   // Définir une variable d'état dans la session pour suivre l'état de connexion
-        //   req.session.isLoggedIn = true;
-        //   res.send("Vous êtes connecté");
-        //   console.log("utilisateur connecté!")
-        // } else {
-        //   // Mot de passe incorrect
-        //   res.status(401).send("Mot de passe incorrect");
-        // }
+          // // Comparer le mot de passe avec le mot de passe stocké dans la base de données
+          // if (mdp === utilisateur.mdp) {
+          //   // Mot de passe correct
+          //   // Définir une variable d'état dans la session pour suivre l'état de connexion
+          //   req.session.isLoggedIn = true;
+          //   res.send("Vous êtes connecté");
+          //   console.log("utilisateur connecté!")
+          // } else {
+          //   // Mot de passe incorrect
+          //   res.status(401).send("Mot de passe incorrect");
+          // }
 
-        // Vérifier si le mot de passe est correct en utilisant bcrypt
-        bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
-          if (err) {
-            console.log("pas de match")
-            throw err;
-          }
+          // Vérifier si le mot de passe est correct en utilisant bcrypt
+          bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
+            if (err) {
+              console.log("pas de match")
+              throw err;
+            }
 
-          if (isMatch) {
-            // Définir une variable d'état dans la session pour suivre l'état de connexion
-            req.session.isLoggedIn = true;
-            res.send('Vous êtes connecté');
-            console.log('Vous êtes connecté');
-          } else {
-            res.status(401).send('Mot de passe incorrect');
-          }
-        })
-      }
-    }
-
+            if (isMatch) {
+              // Définir une variable d'état dans la session pour suivre l'état de connexion
+              req.session.isLoggedIn = true;
+              res.send('Vous êtes connecté');
+              console.log('Vous êtes connecté');
+            } else {
+              res.status(401).send('Mot de passe incorrect');
+            }
+          })
+        }
+      })
+    })
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -308,4 +308,4 @@ function requireAuth(req, res, next) {
 
 //####################################################################
 
-module.exports = app;
+module.exports = app
