@@ -24,9 +24,9 @@ const connection = mysql.createConnection({
   user: "root",
   password: dbPassword,
   port: dbPort,
-  database: "marquise",
-  port: dbPort,
+  database: "marquise"
 });
+
 //Connection a la base de donnée
 connection.connect(function (err) {
   if (err) throw err;
@@ -85,20 +85,6 @@ app.delete("/utilisateurs", (req, res) => {
       return;
     }
     res.send("Utilisateur supprimé avec succès");
-  });
-});
-
-app.get("/produits", (req, res) => {
-  connection.query("SELECT * FROM produits", function (error, results, fields) {
-    if (error) {
-      console.error("Erreur lors de la récupération des produits :", error);
-      res
-        .status(500)
-        .json({ error: "Erreur lors de la récupération des produits" });
-    } else {
-      const jsonResults = JSON.parse(JSON.stringify(results));
-      res.json(jsonResults);
-    }
   });
 });
 
@@ -266,7 +252,6 @@ app.use((req, res, next) => {
   );
   next();
 });
-
 
 // Définir une route d'inscription
 app.post("/register", (req, res) => {
