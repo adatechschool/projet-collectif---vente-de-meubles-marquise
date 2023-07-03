@@ -2,10 +2,10 @@ import React from 'react';
 
 function Inscription() {
   return (
-    <div className='w-full h-screen mx-auto bg-white flex items-center justify-center my-12'>
+    <div className='w-full mx-auto bg-white flex items-center justify-center my-12'>
       <div className='w-3/4 max-w-xl h-fit border-2 rounded-lg shadow dark:border border-sky-700'>
         <h2 className="text-center text-xl font-bold py-6">Créer un compte</h2>
-        <form className="mx-5 text-sm space-y-8">
+        <form className="mx-5 text-sm space-y-0">
           <div className="flex flex-col my-4">
               <label for="prenom" className="text-base font-medium text-gray-900">Prénom</label>
               <input type="text" name="prenom" id="prenom" className="mt-2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-primary-600 block w-full p-2.5" placeholder="Votre prénom" />

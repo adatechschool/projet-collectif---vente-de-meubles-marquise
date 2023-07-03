@@ -7,7 +7,7 @@ import { AiOutlineUser, AiOutlineSearch } from 'react-icons/ai';
 
 const Header = () => {
   return (
-    <div className="sticky top-0">
+    <div className="sticky top-0 z-50">
       <div className="flex justify-between bg-black h-24 pt-3 items-center px-5">
         <div className="text-white">
           <Link 

@@ -7,7 +7,7 @@ import ArtiEventDetails from './ArtiEventDetails';
 const ArtiEvent = () => {
     return (
         <div>
-            <h1 className='font-bold ml-1.5 mt-6'>Articles et événements</h1>
+            <h1 className='font-bold ml-1.5 mt-6 text-base'>Articles et événements</h1>
             <div className='flex justify-around gap-2 p-2 text-center w-full h-full mb-14'>
                 <ArtiEventDetails 
                     lien = "https://www.salon-habitat-toulouse.com/fr" 
