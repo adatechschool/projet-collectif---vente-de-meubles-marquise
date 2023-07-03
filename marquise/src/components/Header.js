@@ -11,7 +11,7 @@ const Header = () => {
       <div className="flex justify-between bg-black h-24 pt-3 items-center px-5">
         <div className="text-white">
           <Link 
-          to={"/PageAccueil"}
+          to={"/"}
           >
             <img src={logo} className="w-16" alt="Logo page d'accueil" />
           </Link>
@@ -32,9 +32,10 @@ const Header = () => {
         </div>
       </div>
       <div className="text-white bg-black flex gap-9 px-5 py-4">
-        <Link to={"/nosproduits"} > Nos Produits </Link>
-        <Link to={"/nouveaute"} > Nouveautés </Link>
-        <Link to={"/promotions"} > Promotions </Link>
+        <Link to={"/"} >Accueil</Link>
+        <Link to={"/nosproduits"} >Nos Produits</Link>
+        <Link to={"/nouveaute"} >Nouveautés</Link>
+        <Link to={"/promotions"} >Promotions</Link>
       </div>
     </div>
   );
