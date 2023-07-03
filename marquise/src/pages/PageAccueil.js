@@ -34,71 +34,60 @@ const PageAccueil = () => {
               index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <img src={image} alt={`Slide ${index + 1}`} className=" w-full h-full object-cover grayscale" />
+            <img src={image} alt={`Slide ${index + 1}`} className="w-full h-full object-cover grayscale" />
             {index === currentSlide && (
               <div className="absolute inset-0 flex flex-col justify-center items-center">
                 <h1 className="text-white h-full text-3xl font-black italic pt-24">Laissez-vous séduire par l'art de vivre en beauté !</h1>
-                <button class="mb-24 relative h-14 w-48 overflow-hidden rounded bg-violet-500 text-base font-bold text-white">
-                  <Link to="/nosproduits">
-                    J'en profite !
-                  </Link>
-                </button>
+                <Link to="/nosproduits" className="mb-24 py-2 relative h-14 w-48 overflow-hidden rounded bg-violet-500 text-base font-bold text-white z-10 text-center">
+                  J'en profite !
+                </Link>
               </div>
             )}
           </div>
         ))}
-      
       </div>
-
-        {/* <a href='https://www.marieclaire.fr/maison/astuces-ranger-maison,1346717.asp' >J'en profite !</a> */}
-
-        {/* <a href="/nosproduits" className="mt-4 text-white bg-black bg-opacity-50 rounded-lg px-5 py-3 mb-16 z-40">
-            J'en profite!
-        </a> */}
-
       <div>
         <h1 className='font-bold ml-1.5 mt-6 text-base'>Collections</h1>
         <div className='flex justify-around gap-2 p-2 text-center w-full h-full mb-14'>
-            <div className='w-1/4 h-48 rounded-lg'>
-                <Link to="/nosproduits">
-                    <img src={canape} className="w-full h-full rounded-lg" alt="categorie Canapé" />
-                    <h2 className='collection-title font-bold relative bottom-8 left-18 text-white'>
-                        Canapé
-                    </h2>
-                </Link>
-            </div>
-            <div className='w-1/4 h-48 rounded-lg'>
-                <Link to="/nosproduits">
-                    <img src={chaise} className="w-full h-full rounded-lg" alt="categorie Chaise" />
-                    <h2 className='collection-title font-bold relative left-26 bottom-8 text-white'>
-                        Chaise
-                    </h2>
-                </Link>
-            </div>
-            <div className='w-1/4 h-48 rounded-lg'>
-                <Link to="/nosproduits">
-                    <img src={fauteuil} className="w-full h-full rounded-lg" alt="categorie Fauteuil" />
-                    <h2 className='collection-title font-bold relative bottom-8 left-34 text-white'>
-                        Fauteuil
-                    </h2>
-                </Link>
-            </div>
-            <div className='w-1/4 h-48 rounded-lg'>
-                <Link to="/nosproduits">
-                    <img src={armoire} className="w-full h-full rounded-lg" alt="categorie Armoire" />
-                    <h2 className='collection-title font-bold relative bottom-8 left-42 text-white'>
-                        Armoire
-                    </h2>
-                </Link>
-            </div>
+          <div className='w-1/4 h-48 rounded-lg'>
+            <Link to="/nosproduits">
+              <img src={canape} className="w-full h-full rounded-lg" alt="categorie Canapé" />
+              <h2 className='collection-title font-bold relative bottom-8 left-18 text-white'>
+                Canapé
+              </h2>
+            </Link>
+          </div>
+          <div className='w-1/4 h-48 rounded-lg'>
+            <Link to="/nosproduits">
+              <img src={chaise} className="w-full h-full rounded-lg" alt="categorie Chaise" />
+              <h2 className='collection-title font-bold relative left-26 bottom-8 text-white'>
+                Chaise
+              </h2>
+            </Link>
+          </div>
+          <div className='w-1/4 h-48 rounded-lg'>
+            <Link to="/nosproduits">
+              <img src={fauteuil} className="w-full h-full rounded-lg" alt="categorie Fauteuil" />
+              <h2 className='collection-title font-bold relative bottom-8 left-34 text-white'>
+                Fauteuil
+              </h2>
+            </Link>
+          </div>
+          <div className='w-1/4 h-48 rounded-lg'>
+            <Link to="/nosproduits">
+              <img src={armoire} className="w-full h-full rounded-lg" alt="categorie Armoire" />
+              <h2 className='collection-title font-bold relative bottom-8 left-42 text-white'>
+                Armoire
+              </h2>
+            </Link>
+          </div>
         </div>
       </div>
       <div>
-          <ArtiEvent />
+        <ArtiEvent />
       </div>
     </div>
   );
 };
- 
 
 export default PageAccueil;

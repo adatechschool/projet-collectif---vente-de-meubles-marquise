@@ -59,7 +59,7 @@ const Footer = () => {
         </div>
       </div>
       <div className='flex justify-center mt-8 text-base font-semibold'>
-        <p className='text-white'>&copy; 2023 - Nom du site, Tous droits réservés</p>
+        <p className='text-white'>&copy; 2023 - Marquise, Tous droits réservés</p>
       </div>
     </footer>
   )
