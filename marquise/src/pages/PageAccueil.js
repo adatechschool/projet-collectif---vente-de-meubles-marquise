@@ -10,6 +10,7 @@ import chaise from "../assets/categorieChaise.jpg";
 import fauteuil from "../assets/categorieFauteuil.jpg";
 import armoire from "../assets/categorieArmoire.jpg";
 import { Link } from 'react-router-dom';
+import ArtiEvent from '../components/ArtiEvent';
 
 const PageAccueil = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -82,6 +83,9 @@ const PageAccueil = () => {
                     </Link>
                 </div>
             </div>
+        </div>
+        <div>
+            <ArtiEvent />
         </div>
     </div>
   );
