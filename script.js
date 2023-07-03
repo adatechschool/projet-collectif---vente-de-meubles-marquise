@@ -1,3 +1,4 @@
+
 const div = document.getElementById("productList");
 document
   .getElementById("fetchProductsBtn")
@@ -9,6 +10,8 @@ document
     div.innerHTML = JSON.stringify(result);
   });
 
+
+
 const deletediv = document.getElementById("delete");
 
 document.getElementById("deleteproduit").addEventListener("click", function () {
@@ -18,4 +21,5 @@ document.getElementById("deleteproduit").addEventListener("click", function () {
   
 
 });
+
 
