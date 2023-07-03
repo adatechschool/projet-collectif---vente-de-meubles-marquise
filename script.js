@@ -16,7 +16,7 @@ const deletediv = document.getElementById("delete");
 
 document.getElementById("deleteproduit").addEventListener("click", function () {
   const element = document.getElementById('deleteproduit');
-  fetch('http://localhost:3000/produits/:123', { method: 'DELETE' })
+  fetch('http://localhost:3000/produits/:', { method: 'DELETE' })
       .then(() => element.innerHTML = 'Delete successful');// Simple DELETE request with fetch
   
 
