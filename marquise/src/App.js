@@ -24,6 +24,8 @@ function App() {
           <Route path="/promotions" element={<Promotions />} />
           <Route path="/panier" element={<Panier />} />
           <Route path="/favoris" element={<Favoris />} />
+
+          
         </Route >
       </Routes>
     </Router>

@@ -3,7 +3,7 @@ require("dotenv").config({ path: "./passwordhide/password.env" });
 const dbPassword = process.env.DB_PASSWORD;
 const dbPort = process.env.DB_PORT;
 const express = require("express");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const app = express();
 const cors = require("cors");
 
