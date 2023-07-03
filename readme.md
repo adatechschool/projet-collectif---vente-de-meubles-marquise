@@ -14,8 +14,8 @@ Cela crée un serveur qui écoute sur le port par défaut (3000) et répond aux 
 
 Veuillez noter que la connexion à la base de données est établie, mais aucune requête SQL n'est effectuée dans cet exemple. Vous devrez ajouter des routes supplémentaires et des requêtes SQL appropriées pour interagir avec votre base de données MySQL en fonction de vos besoins spécifiques.
 
-En ce qui concerne le INSERT : 
 
+En ce qui concerne le INSERT : 
 fieldCount: Le nombre de champs (colonnes) dans le résultat.
 affectedRows: Le nombre de lignes affectées par la requête INSERT INTO, qui devrait être 1 dans votre cas puisque vous insérez une seule ligne.
 insertId: L'ID généré lors de l'insertion de la ligne dans la table. Dans votre cas, il est égal à 1.

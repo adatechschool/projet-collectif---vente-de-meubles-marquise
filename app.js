@@ -7,15 +7,17 @@ const mysql = require("mysql2");
 const app = express();
 const cors = require("cors");
 
+
+
 //modules pour l'authentification
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
+
+app.use(express.json()); // permet de convertir tout auto en format json
 app.use(cors());
 
-const bodyParser = require("body-parser"); // middleware
-app.use(bodyParser.urlencoded({ extended: false }));
 
 // Configuration de la connexion à la base de données
 const connection = mysql.createConnection({
@@ -29,6 +31,35 @@ const connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   console.log("Connecté à la base de données MySQL!");
+});
+
+// Mise à jour d'un produit dans la base de données
+app.put('/produits', (req, res) => {
+  const { nom, prix ,description,stock,date} = req.body;
+  const { id } = req.params;
+  const query = 'UPDATE produits SET nom = "a", prix = 14, description = "azea", stock= 1, date= 12/11/2211 WHERE id = 1'; // remplacer par des variables
+  connection.query(query, [id,nom,description, prix,stock, date], (err, result) => {
+    if (err) {
+      console.error('Erreur lors de la mise à jour du produit :', err);
+      res.status(500).send('Erreur lors de la mise à jour du produit');
+      return;
+    }
+    res.send('Produit mis à jour avec succès');
+  });
+});
+
+// Suppression d'un produit de la base de données
+app.delete('/produits', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE produits FROM produits WHERE id = 2';
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('Erreur lors de la suppression du produit :', err);
+      res.status(500).send('Erreur lors de la suppression du produit');
+      return;
+    }
+    res.send('Produit supprimé avec succès');
+  });
 });
 
 app.get("/utilisateurs", (req, res, next) => {
@@ -81,19 +112,15 @@ app.post("/produits", (req, res, next) => {
     }
   );
 });
-app.use(express.json());
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  next();
+app.post("/utilisateurs", (req, res) => {
+  const email = req.body.email;
+  const mdp = req.body.mdp;
+  connection.query("INSERT INTO utilisateurs (email, mdp)VALUES (?,?)"),
+    [email, mdp],
+    (err, result) => {
+      console.log(err);
+    };
 });
 
 app.get("/produits", (req, res, next) => {
@@ -176,8 +203,21 @@ app.post("/login", (req, res) => {
         })
       }
     }
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+
   );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  next();
 });
+
 
 // Définir une route d'inscription
 app.post("/register", (req, res) => {
