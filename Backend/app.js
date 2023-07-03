@@ -3,17 +3,14 @@ require("dotenv").config({ path: "./passwordhide/password.env" });
 const dbPassword = process.env.DB_PASSWORD;
 const dbPort = process.env.DB_PORT;
 const express = require("express");
-const mysql = require("mysql2");
+const mysql = require("mysql");
 const app = express();
 const cors = require("cors");
-
-
 
 //modules pour l'authentification
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-
 
 app.use(express.json()); // permet de convertir tout auto en format json
 app.use(cors());
@@ -85,20 +82,6 @@ app.delete("/utilisateurs", (req, res) => {
       return;
     }
     res.send("Utilisateur supprimé avec succès");
-  });
-});
-
-app.get("/produits", (req, res) => {
-  connection.query("SELECT * FROM produits", function (error, results, fields) {
-    if (error) {
-      console.error("Erreur lors de la récupération des produits :", error);
-      res
-        .status(500)
-        .json({ error: "Erreur lors de la récupération des produits" });
-    } else {
-      const jsonResults = JSON.parse(JSON.stringify(results));
-      res.json(jsonResults);
-    }
   });
 });
 
@@ -237,28 +220,29 @@ app.post("/login", (req, res) => {
         // Vérifier si le mot de passe est correct en utilisant bcrypt
         bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
           if (err) {
-            console.log("pas de match")
+            console.log("pas de match");
             throw err;
           }
 
           if (isMatch) {
             // Définir une variable d'état dans la session pour suivre l'état de connexion
             req.session.isLoggedIn = true;
-            res.send('Vous êtes connecté');
-            console.log('Vous êtes connecté');
+            res.send("Vous êtes connecté");
+            console.log("Vous êtes connecté");
           } else {
-            res.status(401).send('Mot de passe incorrect');
+            res.status(401).send("Mot de passe incorrect");
           }
-        })
+        });
       }
     }
+  );
+});
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -267,12 +251,10 @@ app.use((req, res, next) => {
   next();
 });
 
-
 // Définir une route d'inscription
 app.post("/register", (req, res) => {
-  const { nom,prenom,email, mdp,adresse } = req.body;
+  const { nom, prenom, email, mdp, adresse } = req.body;
   console.log("inscription de " + email + "...");
-
 
   // Hacher le mot de passe à l'aide de bcrypt
   bcrypt.hash(mdp, 10, (err, hashedPassword) => {
@@ -283,7 +265,7 @@ app.post("/register", (req, res) => {
     // Insérer les informations d'utilisateur dans la base de données
     connection.query(
       "INSERT INTO utilisateurs (nom,prenom,email, mdp,adresse ) VALUES (?, ?,?,?,?)",
-      [nom,prenom,email, hashedPassword,adresse],
+      [nom, prenom, email, hashedPassword, adresse],
       (err) => {
         if (err) {
           console.log("erreur d'inscription'");
