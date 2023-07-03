@@ -16,3 +16,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.collection-title {
+  padding-top: 8px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, transparent 0, transparent 30%, #000);
+  opacity: 0.8;
+}
+
+.grayscale {
+  filter: brightness(75%);
+}

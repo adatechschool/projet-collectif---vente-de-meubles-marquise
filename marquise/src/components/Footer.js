@@ -4,7 +4,7 @@ import { FaCcVisa, FaCcMastercard, FaCcPaypal } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-black text-white h-64 flex">
+    <footer className="classFooter w-full bg-black text-white h-64 flex flex-col">
       <div className="container w-full mx-auto flex justify-evenly mt-7">
         <div className='flex flex-col'>
           <h3 className='text-lg uppercase font-bold pb-5'>À propos</h3>
@@ -54,9 +54,12 @@ const Footer = () => {
             </li>
             <li>
               <FaCcPaypal size={35}/>
-            </li>
+            </li> 
           </ul>
         </div>
+      </div>
+      <div className='flex justify-center mt-8 text-base font-semibold'>
+        <p className='text-white'>&copy; 2023 - Nom du site, Tous droits réservés</p>
       </div>
     </footer>
   )
