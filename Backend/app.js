@@ -255,7 +255,7 @@ app.use((req, res, next) => {
 
 // Définir une route d'inscription
 app.post("/register", (req, res) => {
-  const { nom,prenom,email, mdp,adresse } = req.body;
+  const { nom, prenom, email, mdp, adresse, cp, ville, pays } = req.body;
   console.log("inscription de " + email + "...");
 
 
@@ -267,8 +267,8 @@ app.post("/register", (req, res) => {
 
     // Insérer les informations d'utilisateur dans la base de données
     connection.query(
-      "INSERT INTO utilisateurs (nom,prenom,email, mdp,adresse ) VALUES (?, ?,?,?,?)",
-      [nom,prenom,email, hashedPassword,adresse],
+      "INSERT INTO utilisateurs (nom, prenom, email, mdp, adresse, cp, ville, pays ) VALUES (?,?,?,?,?,?,?,?)",
+      [nom,prenom,email, hashedPassword,adresse,cp, ville, pays],
       (err) => {
         if (err) {
           console.log("erreur d'inscription'");
