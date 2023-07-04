@@ -1,6 +1,7 @@
 import React from 'react';
-import {useState, useEffect,useRef} from "react"// useRef sert à pouvoir utiliser des references
+import {useState, useEffect,useRef} from "react"// useRef sert à pouvoir utiliser des références vers des éléments du DOM
 import { useNavigate } from 'react-router-dom'; // sert à faire les redirection
+//UseEffect permet d'exécuter du code en réponse à des changements dans le composant, tels que des mises à jour d'état, des changements de props ou des événements du cycle de vie.
 
 
 const Connexion = () => {
@@ -66,6 +67,7 @@ const Connexion = () => {
 			<div>
 			  <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Mot de passe*</label>
 			  <input ref={passwordRef} type="password" name="password" id="password" placeholder="••••••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:text-gray-900 dark:focus:border-blue-500" required="" />
+			  <p id="error-message" ref={errorRef} className="text-sm text-red-500"></p>
 			</div>
 			<div className="flex items-center justify-between px-3.5">
 			  <p className='text-xs text-slate-600'>* Informations obligatoires</p>
@@ -77,7 +79,8 @@ const Connexion = () => {
 			<p className="text-sm font-light text-gray-500 dark:text-gray-400">
 			  Nouvel utilisateur ? <a href="./Inscription" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Je créer mon compte</a>
 			</p>
-			<p id="error-message" ref={errorRef} className="text-sm text-red-500"></p>
+			
+			
 		  </form>
 		</section>
 	  </div>
