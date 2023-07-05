@@ -8,13 +8,16 @@ const UserProvider = ({ children }) => {
   const updateUser = (data) => {
     setUserData(data);
   };
-
+  
+//   const loginUser = (user) => {
+//     setUserData(user);
+//   };
   const logoutUser = () => {
     setUserData(null);
   };
 
   return (
-    <UserContext.Provider value={{ userData, updateUser, logoutUser }}>
+    <UserContext.Provider value={{ userData,updateUser, logoutUser }}>
       {children}
     </UserContext.Provider>
   );

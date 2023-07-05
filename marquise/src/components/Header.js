@@ -4,24 +4,27 @@ import { Link } from "react-router-dom";
 import { MdOutlineFavoriteBorder } from "react-icons/md";
 import { FiShoppingCart } from "react-icons/fi";
 import { AiOutlineUser, AiOutlineSearch } from "react-icons/ai";
+import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { useContext } from "react";
 import { UserContext } from "../pages/UserContext";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { userData,logoutUser } = useContext(UserContext);
+  const { userData, logoutUser } = useContext(UserContext);
   const navigate = useNavigate(); // État pour la redirection
   const handleLogout = () => {
     // Réinitialiser les données utilisateur
     // updateUser(null); // ou toute autre valeur vide que vous souhaitez utiliser
     logoutUser();
-  
-    // Effectuer d'autres étapes de déconnexion
-    // Par exemple, supprimer les jetons d'authentification, vider le cache, etc.
-  
     // Rediriger vers la page de connexion
     navigate("/connexion"); // Assurez-vous d'importer `navigate` depuis `react-router-dom`
   };
+
+  const handleLogin = () => {
+
+    navigate("/connexion");
+  };
+
   return (
     <div className="sticky top-0 z-50">
       <div className="flex justify-between bg-black h-24 pt-3 items-center px-5">
@@ -41,32 +44,16 @@ const Header = () => {
             style={{ textIndent: "2rem" }}
           />
         </div>
-        {userData && userData.prenom && (
+        {userData && userData.prenom ? (
           <div
             id="Statut_connexion"
-            className="bg-white text-black font-medium py-2 px-4 rounded-lg"
-            style={{ zIndex: 10 }}
+            // className="bg-white text-black font-medium py-2 px-4 rounded-lg"
+            className=" text-white font-medium py-2 px-4 rounded-lg"
+            style={{ zIndex: 10,fontSize: '1.2rem' }}
           >
-            Bonjour, {userData.prenom} !
-            <button
-              className="bg-white text-black font-medium py-2 px-4 rounded-lg"
-              onClick={handleLogout}
-            >
-              Déconnexion
-            </button>
+            Bonjour, {userData.prenom && userData.prenom.charAt(0).toUpperCase() + userData.prenom.slice(1)} !
           </div>
-        )}
-        {/* {userData && (
-          <div className="flex items-center">
-            <p className="mr-2">Bonjour, {userData.prenom} !</p>
-            <button
-              className="bg-white text-black font-medium py-2 px-4 rounded-lg"
-              onClick={handleLogout}
-            >
-              Déconnexion
-            </button>
-          </div>
-        )} */}
+        ) : null}
         <div className="flex gap-4">
           <Link to={"/favoris"}>
             <MdOutlineFavoriteBorder className="text-white w-8 h-8" />
@@ -78,6 +65,27 @@ const Header = () => {
             <AiOutlineUser className="text-white w-8 h-8" />
           </Link>
         </div>
+        {userData && userData.prenom ? (
+          <button
+            className="bg-white text-black font-medium py-2 px-4 rounded-lg"
+            onClick={handleLogout}
+          >
+            <div className="flex flex-col items-center">
+              <FaSignOutAlt style={{ marginBottom: "0.5rem" }} />
+              <span>Déconnexion</span>
+            </div>
+          </button>
+        ) : (
+          <button
+            className="bg-white text-black font-medium py-2 px-4 rounded-lg"
+            onClick={handleLogin}
+          >
+            <div className="flex flex-col items-center">
+              <FaSignInAlt style={{ marginBottom: "0.5rem" }} />
+              <span>Connexion</span>
+            </div>
+          </button>
+        )}
       </div>
       <div className="text-white bg-black flex gap-9 px-5 py-4">
         <Link to={"/"}>Accueil</Link>
