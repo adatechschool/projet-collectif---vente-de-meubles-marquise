@@ -10,7 +10,6 @@ const Connexion = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const errorRef = useRef(null);
-  // const [loginState, setLoginState] = useState({ data: undefined ,userData: undefined});
   const navigate = useNavigate(); // État pour la redirection
   const { updateUser } = useContext(UserContext);
 
@@ -31,16 +30,13 @@ const Connexion = () => {
 
         if (response.ok) {
           const userData = await response.json();
-          // setLoginState({ data: userData ,userData: userData});
           updateUser(userData);
           console.log(userData);
           console.log("Vous êtes connecté !");
-          // window.location.href = "./pages/PageAccueil";
           navigate("/"); // Déclenche la redirection
         } else {
           const errorMessage = await response.text();
           errorElement.textContent = errorMessage;
-          //   errorElement.style.color = "red";
         }
       } catch (error) {
         console.error("Erreur :", error);

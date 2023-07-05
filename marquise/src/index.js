@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { UserProvider } from './pages/UserContext';
+import { UserProvider } from './pages/UserContext';//envelopper les composants qui doivent accéder au contexte. Ce composant fournit la valeur du contexte à ses descendants. 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

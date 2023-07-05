@@ -1,28 +1,54 @@
-import React from "react";
+import React, {useEffect}from "react";
 import logo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import { MdOutlineFavoriteBorder } from "react-icons/md";
 import { FiShoppingCart } from "react-icons/fi";
 import { AiOutlineUser, AiOutlineSearch } from "react-icons/ai";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
-import { useContext } from "react";
+import { useContext,useState } from "react";
 import { UserContext } from "../pages/UserContext";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { userData, logoutUser } = useContext(UserContext);
+  const { userData, logoutUser,showFormErrorMessage,resetFormErrorMessage,setShowFormErrorMessage } = useContext(UserContext);
   const navigate = useNavigate(); // État pour la redirection
+  //afficher un message d'erreur si l'utilisateur essaie de se connecter sans remplir le formulaire
+  const location = useLocation(); // Obtenir l'URL actuelle
+  const [isFormFilled, setIsFormFilled] = useState(false);//vérifier si le formulaire est rempli
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [buttonClickCount, setButtonClickCount] = useState(0);
+
+
+  useEffect(() => {
+    // Afficher le message d'erreur uniquement sur la page de connexion
+    setShowFormErrorMessage(location.pathname === "/connexion" && buttonClickCount > 1);
+  }, [location, buttonClickCount]);
+
   const handleLogout = () => {
     // Réinitialiser les données utilisateur
-    // updateUser(null); // ou toute autre valeur vide que vous souhaitez utiliser
     logoutUser();
     // Rediriger vers la page de connexion
-    navigate("/connexion"); // Assurez-vous d'importer `navigate` depuis `react-router-dom`
+    navigate("/connexion");
   };
 
   const handleLogin = () => {
-
-    navigate("/connexion");
+    if (!buttonClickCount) {
+      // Premier clic sur le bouton de connexion
+      setButtonClickCount(1);
+      
+    } else {
+      // Deuxième clic ou plus sur le bouton de connexion
+      setButtonClickCount(buttonClickCount + 1);
+      if (!userData && !isFormFilled) {
+        resetFormErrorMessage(); // Réinitialiser le message d'erreur
+        setShowFormErrorMessage(true);
+        console.log(showFormErrorMessage);
+      } else {
+        setShowFormErrorMessage(false); // Réinitialiser le message d'erreur
+        
+      }
+    }
+    navigate("/connexion"); // Rediriger vers la page de connexion
   };
 
   return (
@@ -44,14 +70,23 @@ const Header = () => {
             style={{ textIndent: "2rem" }}
           />
         </div>
+        {showFormErrorMessage && location.pathname === "/connexion" &&(
+          <div className="text-red-500 text-lg mt-2">
+            Merci de remplir le formulaire de connexion.
+          </div>
+        )}
         {userData && userData.prenom ? (
           <div
             id="Statut_connexion"
             // className="bg-white text-black font-medium py-2 px-4 rounded-lg"
             className=" text-white font-medium py-2 px-4 rounded-lg"
-            style={{ zIndex: 10,fontSize: '1.2rem' }}
+            style={{ zIndex: 10, fontSize: "1.2rem" }}
           >
-            Bonjour, {userData.prenom && userData.prenom.charAt(0).toUpperCase() + userData.prenom.slice(1)} !
+            Bonjour,{" "}
+            {userData.prenom &&
+              userData.prenom.charAt(0).toUpperCase() +
+                userData.prenom.slice(1)}{" "}
+            !
           </div>
         ) : null}
         <div className="flex gap-4">
