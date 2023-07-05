@@ -6,7 +6,7 @@ const NosProduits = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("https://649a96bebf7c145d0239136d.mockapi.io/produits")
+    fetch("https://localhost:3300/produits")
       .then((response) => response.json())
       .then((data) => setData(data));
   }, []);

@@ -9,6 +9,7 @@ import Promotions from './pages/Promotions';
 import Favoris from './pages/Favoris';
 import Panier from './pages/Panier';
 import Layout from "./components/Layout";
+import Profile from "./pages/profil";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/promotions" element={<Promotions />} />
           <Route path="/panier" element={<Panier />} />
           <Route path="/favoris" element={<Favoris />} />
+          <Route path="/profile" element={<Profile/>} />
         </Route >
       </Routes>
     </Router>
