@@ -7,13 +7,26 @@ const mysql = require("mysql2");
 const app = express();
 const cors = require("cors");
 
+app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  next();
+});
+app.use(express.json()); // permet de convertir tout auto en format json
+
 //modules pour l'authentification
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-
-app.use(express.json()); // permet de convertir tout auto en format json
-app.use(cors());
 
 // Configuration de la connexion à la base de données
 const connection = mysql.createConnection({
@@ -186,6 +199,43 @@ app.use(
 );
 
 // Définir une route de connexion
+
+app.post("/login", (req, res) => {
+  const { email, mdp } = req.body;
+  console.log("Tentative de connexion avec l'email : " + email);
+
+  const query = "SELECT * FROM utilisateurs WHERE email = ?";
+  connection.query(query, [email], (error, results) => {
+    if (error) {
+      console.error("Erreur :", error);
+      return res.status(500).send("Une erreur s'est produite lors de la connexion");
+    }
+
+    const utilisateur = results[0];
+    console.log("Données de l'utilisateur :", utilisateur);
+
+    if (!utilisateur) {
+      console.error("Nom d'utilisateur incorrect");
+      return res.status(401).send("Nom d'utilisateur incorrect");
+    }
+
+    bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
+      if (err) {
+        console.error("Erreur :", err);
+        return res.status(500).send("Une erreur s'est produite lors de la connexion");
+      }
+
+      if (isMatch) {
+        req.session.user = utilisateur;
+        return res.json(utilisateur);
+        
+      } else {
+        console.error("Mot de passe incorrect");
+        return res.status(401).send("Mot de passe incorrect");
+      }
+    });
+  });
+
 app.post("/login", (req, res) => {
   const { email, mdp } = req.body;
   console.log("Trying to login with " + email + "...");
@@ -237,18 +287,36 @@ app.post("/login", (req, res) => {
     }
   );
 });
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  next();
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+//   );
+//   next();
+
 });
+
+          // // Vérifier si le mot de passe est correct en utilisant bcrypt
+          // bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
+          //   if (err) {
+          //     console.log("pas de match")
+          //     throw err;
+          //   }
+
+  
+
+// Définir une route pour récupérer les informations de l'utilisateur connecté
+app.get("/user", requireAuth, (req, res) => {
+  const user = req.session.user;
+  res.json(user);
+});
+
+
 
 // Définir une route d'inscription
 app.post("/register", (req, res) => {
