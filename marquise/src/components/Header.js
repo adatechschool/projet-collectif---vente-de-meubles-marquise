@@ -141,8 +141,6 @@ const Header = () => {
       <div className="text-white bg-black flex gap-9 px-5 py-4">
         <Link to={"/"}>Accueil</Link>
         <Link to={"/nosproduits"}>Nos Produits</Link>
-        <Link to={"/nouveaute"}>Nouveautés</Link>
-        <Link to={"/promotions"}>Promotions</Link>
       </div>
     </div>
   );
