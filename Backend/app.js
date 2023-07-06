@@ -1,4 +1,4 @@
-require("dotenv").config({ path: "./passwordhide/password.env" });
+require("dotenv").config({ path: "../passwordhide/password.env" });
 
 const dbPassword = process.env.DB_PASSWORD;
 const dbPort = process.env.DB_PORT;
@@ -6,6 +6,22 @@ const express = require("express");
 const mysql = require("mysql2");
 const app = express();
 const cors = require("cors");
+
+app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  next();
+});
+app.use(express.json()); // permet de convertir tout auto en format json
 
 //modules pour l'authentification
 const bcrypt = require("bcrypt");
@@ -121,6 +137,36 @@ app.post("/panier", (req, res) => {
     }
   );
 });
+app.get("/panier/:utilisateurId", (req, res) => {
+  const {utilisateurId} = req.params;
+  connection.query(
+    "SELECT pn.*, p.* FROM panier AS pn JOIN produits AS p ON pn.produit_id = p.id WHERE pn.utilisateur_id = ?",
+    [utilisateurId],
+    (error, results, fields) => {
+      if (error) {
+        console.error("Erreur lors de la récupération du panier :", error);
+        res.status(500).json({ error: "Erreur lors de la récupération du panier" });
+      } else {
+        const panier = results.map((row) => {
+          return {
+            id: row.id,
+            quantite: row.quantite,
+            produit: {
+              id: row.produit_id,
+              nom: row.nom,
+              description: row.description,
+              prix: row.prix,
+              stock: row.stock,
+              date: row.date
+              // Ajoutez d'autres propriétés du produit que vous souhaitez récupérer
+            }
+          };
+        });
+        res.json(panier);
+      }
+    }
+  );
+});
 
 // Mise à jour d'un produit dans la base de données
 app.put("/produits/:id", (req, res) => {
@@ -197,6 +243,42 @@ app.use(
 // Définir une route de connexion
 app.post("/login", (req, res) => {
   const { email, mdp } = req.body;
+  console.log("Tentative de connexion avec l'email : " + email);
+
+  const query = "SELECT * FROM utilisateurs WHERE email = ?";
+  connection.query(query, [email], (error, results) => {
+    if (error) {
+      console.error("Erreur :", error);
+      return res.status(500).send("Une erreur s'est produite lors de la connexion");
+    }
+
+    const utilisateur = results[0];
+    console.log("Données de l'utilisateur :", utilisateur);
+
+    if (!utilisateur) {
+      console.error("Nom d'utilisateur incorrect");
+      return res.status(401).send("Nom d'utilisateur incorrect");
+    }
+
+    bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
+      if (err) {
+        console.error("Erreur :", err);
+        return res.status(500).send("Une erreur s'est produite lors de la connexion");
+      }
+
+      if (isMatch) {
+        req.session.user = utilisateur;
+        return res.json(utilisateur);
+        
+      } else {
+        console.error("Mot de passe incorrect");
+        return res.status(401).send("Mot de passe incorrect");
+      }
+    });
+  });
+
+app.post("/login", (req, res) => {
+  const { email, mdp } = req.body;
   console.log("Trying to login with " + email + "...");
   // Vérifier si le nom d'utilisateur et le mot de passe correspondent à la base de données
   connection.query(
@@ -213,19 +295,6 @@ app.post("/login", (req, res) => {
         res.status(401).send("Nom d'utilisateur incorrect");
       } else {
         const utilisateur = results[0];
-
-        // // Comparer le mot de passe avec le mot de passe stocké dans la base de données
-        // if (mdp === utilisateur.mdp) {
-        //   // Mot de passe correct
-        //   // Définir une variable d'état dans la session pour suivre l'état de connexion
-        //   req.session.isLoggedIn = true;
-        //   res.send("Vous êtes connecté");
-        //   console.log("utilisateur connecté!")
-        // } else {
-        //   // Mot de passe incorrect
-        //   res.status(401).send("Mot de passe incorrect");
-        // }
-
         // Vérifier si le mot de passe est correct en utilisant bcrypt
         bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
           if (err) {
@@ -244,6 +313,7 @@ app.post("/login", (req, res) => {
         });
       }
     }
+
   );
 });
 app.use((req, res, next) => {
@@ -251,17 +321,22 @@ app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+
   );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  next();
 });
+});
+
+// Définir une route pour récupérer les informations de l'utilisateur connecté
+app.get("/user", requireAuth, (req, res) => {
+  const user = req.session.user;
+  res.json(user);
+});
+
 
 // Définir une route d'inscription
 app.post("/register", (req, res) => {
-  const { nom, prenom, email, mdp, adresse } = req.body;
+
+  const { nom, prenom, email, mdp, adresse, cp, ville, pays, terms } = req.body;
   console.log("inscription de " + email + "...");
 
   // Hacher le mot de passe à l'aide de bcrypt
@@ -272,8 +347,8 @@ app.post("/register", (req, res) => {
 
     // Insérer les informations d'utilisateur dans la base de données
     connection.query(
-      "INSERT INTO utilisateurs (nom,prenom,email, mdp,adresse ) VALUES (?, ?,?,?,?)",
-      [nom, prenom, email, hashedPassword, adresse],
+      "INSERT INTO utilisateurs (nom, prenom, email, mdp, adresse, cp, ville, pays,terms ) VALUES (?,?,?,?,?,?,?,?,?)",
+      [nom, prenom, email, hashedPassword, adresse, cp, ville, pays, terms],
       (err) => {
         if (err) {
           console.log("erreur d'inscription'");
@@ -295,7 +370,5 @@ function requireAuth(req, res, next) {
     res.redirect("/login");
   }
 }
-
-//####################################################################
 
 module.exports = app;
