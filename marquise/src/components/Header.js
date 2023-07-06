@@ -72,7 +72,7 @@ const Header = () => {
       <div className="flex justify-between bg-black h-24 pt-3 items-center px-5">
         <div className="text-white">
           <Link to={"/"}>
-            <img src={logo} className="w-16" alt="Logo page d'accueil" />
+            <img src={logo} className="w-28" alt="Logo page d'accueil" />
           </Link>
         </div>
         <div className="SearchBar w-2/5 flex">
