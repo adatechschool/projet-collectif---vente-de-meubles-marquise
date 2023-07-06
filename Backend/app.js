@@ -1,4 +1,4 @@
-require("dotenv").config({ path: "./passwordhide/password.env" });
+require("dotenv").config({ path: "../passwordhide/password.env" });
 
 const dbPassword = process.env.DB_PASSWORD;
 const dbPort = process.env.DB_PORT;

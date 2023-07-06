@@ -1,5 +1,6 @@
 import React from "react";
 
+
 const CarteMeuble = ({ photo, nom, description, prix }) => {
   return (
     <div>

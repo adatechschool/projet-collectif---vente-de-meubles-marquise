@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CarteMeuble from "../components/CarteMeuble";
 
+
 const NosProduits = () => {
   const [data, setData] = useState([]);
 
