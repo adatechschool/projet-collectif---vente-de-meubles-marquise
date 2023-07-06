@@ -28,6 +28,10 @@ const bcrypt = require("bcrypt");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
+app.use(express.json()); // permet de convertir tout auto en format json
+app.use(cors());
+app.use("/images", express.static(__dirname + "/images"));
+
 // Configuration de la connexion à la base de données
 const connection = mysql.createConnection({
   host: "localhost",
@@ -101,7 +105,7 @@ app.delete("/utilisateurs", (req, res) => {
 // Ajouter un produit à la base de donnée
 app.post("/produits", (req, res) => {
   connection.query(
-    "INSERT INTO produits (nom, description, prix, stock, date) VALUES ('abc', 'descript', 123, 0, '12/12/2022')",
+    "INSERT INTO produits (nom, description, prix) VALUES ('abc', 'descript', 123)",
     function (error, results, fields) {
       if (error) {
         console.error("Erreur lors de l'insertion des produits :", error);
@@ -166,22 +170,18 @@ app.get("/panier/:utilisateurId", (req, res) => {
 
 // Mise à jour d'un produit dans la base de données
 app.put("/produits/:id", (req, res) => {
-  const { nom, prix, description, stock, date } = req.body;
+  const { nom, prix, description } = req.body;
   const { id } = req.params;
   const query =
-    "UPDATE produits SET nom = ?, prix = ?, description = ?, stock = ?, date = ? WHERE id = ?";
-  connection.query(
-    query,
-    [nom, prix, description, stock, date, id],
-    (err, result) => {
-      if (err) {
-        console.error("Erreur lors de la mise à jour du produit :", err);
-        res.status(500).send("Erreur lors de la mise à jour du produit");
-        return;
-      }
-      res.send("Produit mis à jour avec succès");
+    "UPDATE produits SET nom = ?, prix = ?, description = ?,  = ?, WHERE id = ?";
+  connection.query(query, [nom, prix, description, id], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de la mise à jour du produit :", err);
+      res.status(500).send("Erreur lors de la mise à jour du produit");
+      return;
     }
-  );
+    res.send("Produit mis à jour avec succès");
+  });
 });
 
 // Suppression d'un produit de la base de données
@@ -212,6 +212,18 @@ app.get("/produits", (req, res) => {
   });
 });
 
+// ajouter image dans Mysql
+const baseUrl = "http://localhost:3000/";
+const imageUrl = baseUrl + "images/canape-2.jpeg";
+const query = "UPDATE produits SET images = ? WHERE id = 2";
+connection.query(query, [imageUrl], (error, results) => {
+  if (error) {
+    console.error(error);
+    return;
+  }
+  console.log("URL d'image ajoutée à la base de données avec succès");
+});
+
 //############################# LOGIN ################################
 
 //configuration du secret (signature cookies et session)
@@ -229,7 +241,6 @@ app.use(
 );
 
 // Définir une route de connexion
-
 app.post("/login", (req, res) => {
   const { email, mdp } = req.body;
   console.log("Tentative de connexion avec l'email : " + email);
@@ -284,19 +295,6 @@ app.post("/login", (req, res) => {
         res.status(401).send("Nom d'utilisateur incorrect");
       } else {
         const utilisateur = results[0];
-
-        // // Comparer le mot de passe avec le mot de passe stocké dans la base de données
-        // if (mdp === utilisateur.mdp) {
-        //   // Mot de passe correct
-        //   // Définir une variable d'état dans la session pour suivre l'état de connexion
-        //   req.session.isLoggedIn = true;
-        //   res.send("Vous êtes connecté");
-        //   console.log("utilisateur connecté!")
-        // } else {
-        //   // Mot de passe incorrect
-        //   res.status(401).send("Mot de passe incorrect");
-        // }
-
         // Vérifier si le mot de passe est correct en utilisant bcrypt
         bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
           if (err) {
@@ -315,30 +313,18 @@ app.post("/login", (req, res) => {
         });
       }
     }
+
   );
 });
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-//   );
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-//   );
-//   next();
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
 
+  );
 });
-
-          // // Vérifier si le mot de passe est correct en utilisant bcrypt
-          // bcrypt.compare(mdp, utilisateur.mdp, (err, isMatch) => {
-          //   if (err) {
-          //     console.log("pas de match")
-          //     throw err;
-          //   }
-
-  
+});
 
 // Définir une route pour récupérer les informations de l'utilisateur connecté
 app.get("/user", requireAuth, (req, res) => {
@@ -347,9 +333,9 @@ app.get("/user", requireAuth, (req, res) => {
 });
 
 
-
 // Définir une route d'inscription
 app.post("/register", (req, res) => {
+
   const { nom, prenom, email, mdp, adresse, cp, ville, pays, terms } = req.body;
   console.log("inscription de " + email + "...");
 
@@ -384,7 +370,5 @@ function requireAuth(req, res, next) {
     res.redirect("/login");
   }
 }
-
-//####################################################################
 
 module.exports = app;

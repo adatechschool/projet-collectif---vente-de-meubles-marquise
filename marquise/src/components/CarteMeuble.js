@@ -1,19 +1,16 @@
 import React from "react";
 
-
-const CarteMeuble = ({ photo, nom, description, prix }) => {
+const CarteMeuble = ({ images, nom, description, prix }) => {
   return (
-    <div>
-      <li className="text-center pb-5">
-        <img
-          className="w-48 mx-auto pb-5"
-          src={photo}
-          alt={nom}
-        />
+    <div className="flex flex-col justify-center">
+      <li className="text-center pb-5 list-none">
+        <img className="max-w-xs max-h-72 mx-auto pb-5" src={images} alt={nom} />
         <div className="infos">
           <h2 className="font-bold">{nom}</h2>
-          <h4 className="italic text-xs px-6">{description}</h4>
-          <p>Prix: {prix}</p>
+          <p className="italic text-sm text-justify max-w-xs leading-5">
+            {description}
+          </p>
+          <p className="pt-5 font-medium">Prix: {prix}€</p>
         </div>
       </li>
     </div>
