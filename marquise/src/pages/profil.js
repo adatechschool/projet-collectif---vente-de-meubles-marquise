@@ -12,7 +12,8 @@ function Profile() {
         "https://demos.creative-tim.com/notus-js/assets/img/team-2-800x800.jpg",
       name: "Rihanna",
       email: "riri.roro01@gmail.com",
-      address: "1411 Broadway, 38th Floor _New York, USA."
+      address: "1411 Broadway, 38th Floor _New York, USA.",
+      proverbe : "la vie en rose."
     });
   }, []);
 
