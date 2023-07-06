@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CarteMeuble from "../components/CarteMeuble";
 
+
 const NosProduits = () => {
   const [data, setData] = useState([]);
 
@@ -9,49 +10,24 @@ const NosProduits = () => {
     fetch("https://localhost:3300/produits")
       .then((response) => response.json())
       .then((data) => setData(data));
+    fetch('http://localhost:3000/produits')
+      .then(response => response.json())
+      .then(data => setData(data)) // Fix: Use setData instead of setProducts
+      .catch(error => console.error('Error fetching products:', error));
   }, []);
+  console.log('Data state:', data); // Debugging console.log
 
   return (
     <div>
-      <div className="Navbar flex gap-9 px-5 py-2 italic bg-gray-500">
-        <Link to={"/"}>
-          <h2>Canapé</h2>
-        </Link>
-        <Link to={"/"}>
-          <h2>Chaise</h2>
-        </Link>
-        <Link to={"/"}>
-          <h2>Armoire</h2>
-        </Link>
-        <Link to={"/"}>
-          <h2>Fauteuil</h2>
-        </Link>
-      </div>
-      <div className="description flex justify-center py-5">
-        <div className="w-1/2 text-center bg-gray-200 py-5">
-          <h1 className="font-bold text-xl py-2">CANAPÉ</h1>
-          <p className="italic">
-            Le canapé idéal pour sublimer votre salon : choix entre canapé droit
-            ou d'angle, personnalisation illimitée, matières luxueuses.
-            Découvrez l'harmonie parfaite entre savoir-faire exceptionnel,
-            confort absolu et design haut de gamme. Les collections de canapés
-            exclusives épousent votre style et révèlent l'excellence des
-            finitions
-          </p>
-        </div>
-      </div>
-      <div className="filter  bg-gray-200 py-2">
-        <p>Filter "Bonus"</p>
-      </div>
-      <div className="listeDesMeubles py-10 px-5">
-        <div className="grid grid-cols-4 gap-4 list-none">
+      <div className="listeDesMeubles py-14 px-5">
+        <div className="grid grid-cols-4 gap-4">
         {data.map((meuble) => (
             <Link to={`/produit/${meuble.id}`} key={meuble.id}>
             <CarteMeuble
               nom={meuble.nom}
               description={meuble.description}
               prix={meuble.prix}
-              photo={meuble.photo}
+              images={meuble.images}
             />
            </Link>
         ))}
