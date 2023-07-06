@@ -9,9 +9,9 @@ import Promotions from './pages/Promotions';
 import Favoris from './pages/Favoris';
 import Panier from './pages/Panier';
 import Layout from "./components/Layout";
-import Profile from "./pages/profil";
 import DetailProduit from "./pages/DetailProduit";
 import Profile from "./pages/Profil";
+
 
 function App() {
   return (
@@ -26,7 +26,6 @@ function App() {
           <Route path="/promotions" element={<Promotions />} />
           <Route path="/panier" element={<Panier />} />
           <Route path="/favoris" element={<Favoris />} />
-          <Route path="/profile" element={<Profile/>} />
           <Route path="/produit/:id" element={<DetailProduit />} />
           <Route path="/profile" element={<Profile />} />
         </Route >
