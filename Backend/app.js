@@ -133,6 +133,36 @@ app.post("/panier", (req, res) => {
     }
   );
 });
+app.get("/panier/:utilisateurId", (req, res) => {
+  const {utilisateurId} = req.params;
+  connection.query(
+    "SELECT pn.*, p.* FROM panier AS pn JOIN produits AS p ON pn.produit_id = p.id WHERE pn.utilisateur_id = ?",
+    [utilisateurId],
+    (error, results, fields) => {
+      if (error) {
+        console.error("Erreur lors de la récupération du panier :", error);
+        res.status(500).json({ error: "Erreur lors de la récupération du panier" });
+      } else {
+        const panier = results.map((row) => {
+          return {
+            id: row.id,
+            quantite: row.quantite,
+            produit: {
+              id: row.produit_id,
+              nom: row.nom,
+              description: row.description,
+              prix: row.prix,
+              stock: row.stock,
+              date: row.date
+              // Ajoutez d'autres propriétés du produit que vous souhaitez récupérer
+            }
+          };
+        });
+        res.json(panier);
+      }
+    }
+  );
+});
 
 // Mise à jour d'un produit dans la base de données
 app.put("/produits/:id", (req, res) => {
