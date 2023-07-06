@@ -42,38 +42,11 @@ const Header = () => {
     setButtonClickCount(0);
   };
 
-  // const handleLogin = () => {
-  //   if (!buttonClickCount) {
-  //     // Premier clic sur le bouton de connexion
-  //     setButtonClickCount(1);
-  //   } else if (buttonClickCount === 1) {
-  //     // Deuxième clic ou plus sur le bouton de connexion
-  //     setButtonClickCount(buttonClickCount + 1);
-  //     if (!userData && !isFormFilled) {
-  //       resetFormErrorMessage(); // Réinitialiser le message d'erreur
-  //       setShowFormErrorMessage(true);
-  //       console.log(showFormErrorMessage);
-  //     } else {
-  //       setShowFormErrorMessage(false); // Réinitialiser le message d'erreur
-  //     }
-  //   }
-  //   // Réinitialiser le compteur de clics si l'URL actuelle n'est pas "/connexion"
-  // if (location.pathname !== "/connexion") {
-  //   setButtonClickCount(0);
-  // }
-  // if (location.pathname !== "/connexion" && buttonClickCount ) {
-  //   setShowFormErrorMessage(true);
-  // }
-  //   navigate("/connexion"); // Rediriger vers la page de connexion
-  // };
   const handleLogin = () => {
     if (location.pathname === "/connexion") {
       if (!buttonClickCount) {
         // Premier clic sur le bouton de connexion
         setButtonClickCount(1);
-      } else if (buttonClickCount === 1) {
-        // Deuxième clic sur le bouton de connexion
-        setButtonClickCount(buttonClickCount + 1);
         if (!userData && !isFormFilled) {
           resetFormErrorMessage(); // Réinitialiser le message d'erreur
           setShowFormErrorMessage(true);
@@ -81,22 +54,19 @@ const Header = () => {
         } else {
           setShowFormErrorMessage(false); // Réinitialiser le message d'erreur
         }
+      } else {
+        // Deuxième clic ou plus sur le bouton de connexion
+        setButtonClickCount(buttonClickCount + 1);
       }
     } else {
       // Réinitialiser le compteur de clics si l'URL actuelle n'est pas "/connexion"
       setButtonClickCount(0);
     }
-  
     navigate("/connexion"); // Rediriger vers la page de connexion
   };
   
+ 
   
-  
-  
-  
-  
-  
-
   return (
     <div className="sticky top-0 z-50">
       <div className="flex justify-between bg-black h-24 pt-3 items-center px-5">
