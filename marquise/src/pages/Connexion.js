@@ -33,7 +33,7 @@ const Connexion = () => {
           updateUser(userData);
           console.log(userData);
           console.log("Vous êtes connecté !");
-          navigate("/"); // Déclenche la redirection
+          navigate("/profile"); // Déclenche la redirection
         } else {
           const errorMessage = await response.text();
           errorElement.textContent = errorMessage;
