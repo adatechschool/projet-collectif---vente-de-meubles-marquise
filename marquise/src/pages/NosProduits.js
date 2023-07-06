@@ -7,6 +7,9 @@ const NosProduits = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    fetch("https://localhost:3300/produits")
+      .then((response) => response.json())
+      .then((data) => setData(data));
     fetch('http://localhost:3000/produits')
       .then(response => response.json())
       .then(data => setData(data)) // Fix: Use setData instead of setProducts
